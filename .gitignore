@@ -1,6 +1,11 @@
-# Ignore all client config trees
+# Ignore everything under cfg/
 /cfg/**
 
-# But keep template assets and a placeholder
+# Unignore the cfg directory itself and the _templates subtree
+!/cfg/
+!/cfg/_templates/
 !/cfg/_templates/**
+
+# Keep these helper files tracked
 !/cfg/.gitkeep
+!/cfg/README.md
