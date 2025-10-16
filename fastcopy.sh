@@ -53,7 +53,7 @@ SSH_STRICT_HOST_KEY_CHECKING="${SSH_STRICT_HOST_KEY_CHECKING:-yes}"
 
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
 LOCAL_DUMP_BASE="${LOCAL_DUMP_BASE:-/tmp}"
-DUMP_DIR="${LOCAL_DUMP_BASE%/}/dbdump_${TIMESTAMP}"
+DUMP_DIR="${LOCAL_DUMP_BASE%/}/${SOURCE_DB_NAME}_${TIMESTAMP}"
 
 # Threads/knobs (portable CPU count)
 if command -v nproc >/dev/null 2>&1; then CPU_THREADS="$(nproc)"; elif command -v sysctl >/dev/null 2>&1; then CPU_THREADS="$(sysctl -n hw.ncpu 2>/dev/null || echo 4)"; else CPU_THREADS=4; fi
@@ -159,7 +159,7 @@ fi
 if [ "$(tolower "${KEEP_DUMP}")" != "true" ]; then
   if [ -n "$DUMP_DIR" ] && [ -d "$DUMP_DIR" ]; then
     case "$DUMP_DIR" in
-      ${LOCAL_DUMP_BASE%/}/dbdump_*)
+      ${LOCAL_DUMP_BASE%/}/${SOURCE_DB_NAME}_*)
         log "Removing dump directory: $DUMP_DIR"
         rm -rf -- "$DUMP_DIR" || warn "Failed to remove $DUMP_DIR"
         ;;
