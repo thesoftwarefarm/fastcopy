@@ -1,0 +1,6 @@
+# Ignore all client config trees
+/cfg/**
+
+# But keep template assets and a placeholder
+!/cfg/_templates/**
+!/cfg/.gitkeep
