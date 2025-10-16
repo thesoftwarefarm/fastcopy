@@ -114,8 +114,8 @@ Before running FastCopy, ensure you have the following installed on your system:
   
   **Ubuntu/Debian:**
   ```bash
-  wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb
-  sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb
+  wget https://dev.mysql.com/get/mysql-apt-config_0.8.34-1_all.deb
+  sudo dpkg -i mysql-apt-config_0.8.34-1_all.deb
   sudo apt-get update
   sudo apt-get install mysql-shell
   ```
