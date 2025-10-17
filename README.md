@@ -62,7 +62,7 @@ TARGET_DB_NAME=development_db
 DUMP_THREADS=8                    # Parallel dump threads
 LOAD_THREADS=8                    # Parallel load threads
 DUMP_COMPRESSION=zstd             # zstd|gzip|none
-DEFER_INDEXES=all                 # none|all|fulltext|secondary
+DEFER_INDEXES=all                 # all|fulltext|off
 IGNORE_EXISTING=true              # Skip existing objects
 KEEP_DUMP=false                   # Keep dump files after load
 ```
