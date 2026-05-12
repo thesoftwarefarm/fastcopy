@@ -88,6 +88,24 @@ cp sample.cfg my-project.cfg
    - Transfer and load the data into your local Docker container
    - Clean up temporary files and close connections
 
+## Multi-tenant mode
+
+For multi-tenant apps (Rails Apartment / Laravel tenancy / django-tenants and similar), `fastcopy-multi.sh` clones a **landlord** database plus every tenant database it owns in a single invocation. Tenants are discovered by running a SQL query against the landlord; each clone is then delegated to `fastcopy.sh`. Runs are sequential and continue past individual failures — a summary table is printed at the end and the script exits non-zero if any clone failed.
+
+```bash
+cp cfg/_templates/multi-tenant.cfg cfg/your-multi.cfg
+# edit cfg/your-multi.cfg — set LANDLORD_DB_NAME, TENANT_DISCOVERY_QUERY, credentials
+./fastcopy-multi.sh cfg/your-multi.cfg
+```
+
+The cfg has three option scopes:
+
+- **Common**: `DUMP_THREADS`, `LOAD_THREADS`, `DUMP_COMPRESSION`, `KEEP_DUMP`, `DROP_TARGET_DATABASE_BEFORE_LOAD`, `TARGET_DB_CHARSET`, `TARGET_DB_COLLATION`, `LOCAL_DUMP_BASE`, plus default `EXCLUDE_TABLES_DATA`, `DEFER_INDEXES`, `IGNORE_EXISTING`. Apply to every clone.
+- **Landlord**: `LANDLORD_EXCLUDE_TABLES_DATA`, `LANDLORD_DEFER_INDEXES`, `LANDLORD_IGNORE_EXISTING`. Override the common defaults for the landlord clone only.
+- **Tenant**: `TENANT_EXCLUDE_TABLES_DATA`, `TENANT_DEFER_INDEXES`, `TENANT_IGNORE_EXISTING`. Override the common defaults for every tenant clone.
+
+Target names default to the source name (preserving the per-tenant identity the app expects). Set `TARGET_DB_PREFIX=clone_` to namespace them, and/or `CLONE_WITH_TIMESTAMP=true` to append `_YYYYmmdd_HHMMSS`. Tenant names are validated against `^[A-Za-z0-9_$]+$` after discovery — anything else is logged and skipped.
+
 ## Prerequisites
 
 ### Required Software
