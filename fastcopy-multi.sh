@@ -73,11 +73,16 @@ TUNNEL_PID="$(pgrep -f "ssh .*${PORT}:${REMOTE_DB_HOST}:${REMOTE_DB_PORT}.*${REM
 
 # --- tenant discovery ---
 discover_tenant_dbs(){
-  local out
-  out="$(printf '%s\n' "$TENANT_DISCOVERY_QUERY" \
+  local raw rc=0
+  raw="$(printf '%s\n' "$TENANT_DISCOVERY_QUERY" \
     | mysqlsh --sql --quiet-start=2 \
-        --uri "${REMOTE_DB_USER}:${REMOTE_DB_PASSWORD}@127.0.0.1:${PORT}/${LANDLORD_DB_NAME}" 2>/dev/null \
-    | awk '
+        --uri "${REMOTE_DB_USER}:${REMOTE_DB_PASSWORD}@127.0.0.1:${PORT}/${LANDLORD_DB_NAME}")" \
+    || rc=$?
+  if [ $rc -ne 0 ]; then
+    die "Tenant discovery query failed (mysqlsh exit $rc). Check TENANT_DISCOVERY_QUERY — reserved words like 'database', 'order', 'group' must be backticked: SELECT \`database\` FROM tenants ..."
+  fi
+  local out
+  out="$(printf '%s\n' "$raw" | awk '
         BEGIN{IGNORECASE=1}
         /^[[:space:]]*$/ {next}
         /^[-+|]/ {next}
